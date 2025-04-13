@@ -1,10 +1,10 @@
 import React from 'react';
-import { Home, Settings, Plus } from 'lucide-react';
+import { Home, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
 
 const BottomNavigation = ({ activePage }) => {
-  const { darkMode, theme } = useTheme();
+  const { theme } = useTheme();
   const navigate = useNavigate();
   
   return (
@@ -35,19 +35,16 @@ const BottomNavigation = ({ activePage }) => {
         <Plus size={28} color="#ffffff" />
       </button>
       
+      {/* Кнопка отладки в правой части */}
       <button 
         className="flex-1 p-3 flex flex-col items-center"
-        onClick={() => navigate('/settings')}
+        onClick={() => navigate('/debug')}
       >
-        <Settings 
-          size={24} 
-          color={activePage === 'settings' ? theme.accent : theme.textSecondary} 
-        />
         <span 
           className="text-xs mt-1" 
-          style={{ color: activePage === 'settings' ? theme.accent : theme.textSecondary }}
+          style={{ color: activePage === 'debug' ? theme.accent : theme.textSecondary }}
         >
-          Настройки
+          Отладка
         </span>
       </button>
     </div>

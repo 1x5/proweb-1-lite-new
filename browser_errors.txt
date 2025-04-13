@@ -1,0 +1,8 @@
+[2025-04-13T21:47:06.415Z] Unhandled Promise Rejection
+Source: N/A
+Line: N/A, Column: N/A
+Stack: TypeError: Cannot read properties of null (reading 'type')
+    at ph.<anonymous> (chrome-extension://egjidjbpglichdcondbcbdnbeeppgdph/inpage.js:2269:178084)
+    at Generator.next (<anonymous>)
+    at pe (chrome-extension://egjidjbpglichdcondbcbdnbeeppgdph/inpage.js:2269:176972)
+----------------------------------------------

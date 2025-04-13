@@ -3,37 +3,24 @@ import {
   createBrowserRouter, 
   RouterProvider, 
   createRoutesFromElements, 
-  Route, 
-  Navigate,
+  Route,
   useNavigate,
   useLocation
 } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import OrderDetailsPage from './pages/OrderDetailsPage';
-import SettingsPage from './pages/SettingsPage';
-import LoginPage from './pages/LoginPage';
 import { ThemeProvider } from './contexts/ThemeContext';
-
-// Компонент для защищенных маршрутов
-const ProtectedRoute = ({ element }) => {
-  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-  
-  if (!isLoggedIn) {
-    return <Navigate to="/login" replace />;
-  }
-  
-  return element;
-};
 
 // Компонент для глобальных горячих клавиш
 const GlobalHotkeys = () => {
   const navigate = useNavigate();
+  // eslint-disable-next-line no-unused-vars
   const location = useLocation();
   
   useEffect(() => {
     const handleKeyDown = (e) => {
-      // Проверяем, что не находимся в поле ввода
-      const isInputActive = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
+      // Проверяем, что не находимся в поле ввода и что document.activeElement существует
+      const isInputActive = document.activeElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
       
       // Cmd+N или Ctrl+N - создать новый заказ
       if ((e.metaKey || e.ctrlKey) && e.key === 'n' && !isInputActive) {
@@ -41,10 +28,10 @@ const GlobalHotkeys = () => {
         navigate('/order/new');
       }
       
-      // Cmd+, или Ctrl+, - открыть настройки
-      if ((e.metaKey || e.ctrlKey) && e.key === ',' && !isInputActive) {
+      // Cmd+D или Ctrl+D - открыть панель отладки
+      if ((e.metaKey || e.ctrlKey) && e.key === 'd' && !isInputActive) {
         e.preventDefault();
-        navigate('/settings');
+        navigate('/debug');
       }
     };
     
@@ -58,61 +45,182 @@ const GlobalHotkeys = () => {
   return null;
 };
 
-// Компонент-обертка для передачи функции logout
-const SettingsWithLogout = ({ onLogout }) => {
+// Компонент для страницы отладки
+const DebugPage = () => {
+  const [errors, setErrors] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   
-  const handleLogout = () => {
-    onLogout();
-    navigate('/login');
+  useEffect(() => {
+    // Получаем ошибки из localStorage
+    const storedErrors = JSON.parse(localStorage.getItem('jsErrors') || '[]');
+    setErrors(storedErrors);
+    setLoading(false);
+    
+    // Также попробуем получить ошибки с сервера
+    fetch('http://localhost:3001/api/errors')
+      .then(response => response.json())
+      .then(serverErrors => {
+        // Объединяем с локальными ошибками, избегая дубликатов
+        if (Array.isArray(serverErrors) && serverErrors.length > 0) {
+          const mergedErrors = [...storedErrors];
+          
+          serverErrors.forEach(serverError => {
+            // Проверяем, нет ли уже такой ошибки
+            const isDuplicate = storedErrors.some(
+              e => e.timestamp === serverError.timestamp && e.message === serverError.message
+            );
+            
+            if (!isDuplicate) {
+              mergedErrors.push(serverError);
+            }
+          });
+          
+          // Сортируем по времени
+          mergedErrors.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+          
+          setErrors(mergedErrors);
+        }
+      })
+      .catch(err => {
+        console.error('Failed to fetch errors from server:', err);
+      });
+  }, []);
+  
+  const clearErrors = () => {
+    if (window.errorLogs && window.errorLogs.clearErrors) {
+      window.errorLogs.clearErrors();
+    } else {
+      localStorage.setItem('jsErrors', '[]');
+    }
+    
+    // Очищаем ошибки на сервере
+    fetch('http://localhost:3001/api/errors', { method: 'DELETE' })
+      .catch(err => console.error('Failed to clear errors on server:', err));
+      
+    setErrors([]);
   };
   
-  return <SettingsPage onLogout={handleLogout} />;
+  return (
+    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        <h1 style={{ margin: 0 }}>Панель отладки</h1>
+        <div>
+          <button 
+            onClick={() => navigate(-1)}
+            style={{ 
+              padding: '8px 16px', 
+              backgroundColor: '#f0f0f0', 
+              border: 'none', 
+              borderRadius: '4px',
+              cursor: 'pointer',
+              marginRight: '10px'
+            }}
+          >
+            Назад
+          </button>
+          
+          <button 
+            onClick={clearErrors}
+            style={{ 
+              padding: '8px 16px', 
+              backgroundColor: '#dc3545', 
+              color: 'white',
+              border: 'none', 
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Очистить ошибки
+          </button>
+        </div>
+      </div>
+      
+      <div style={{ marginBottom: '20px' }}>
+        <h2>JavaScript Ошибки</h2>
+        {loading ? (
+          <p>Загрузка...</p>
+        ) : errors.length === 0 ? (
+          <p>Ошибок не обнаружено</p>
+        ) : (
+          <div>
+            {errors.map((error, index) => (
+              <div 
+                key={error.id || error.timestamp + index} 
+                style={{ 
+                  backgroundColor: '#f8d7da', 
+                  border: '1px solid #f5c6cb',
+                  borderRadius: '4px',
+                  padding: '15px',
+                  marginBottom: '10px'
+                }}
+              >
+                <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
+                  {error.timestamp && new Date(error.timestamp).toLocaleString()} - {error.message}
+                </div>
+                {error.source && <div>Источник: {error.source}</div>}
+                {error.url && <div>URL: {error.url}</div>}
+                {(error.lineno || error.colno) && (
+                  <div>Строка: {error.lineno || 'N/A'}, Колонка: {error.colno || 'N/A'}</div>
+                )}
+                {(error.stack || error.reason) && (
+                  <div style={{ marginTop: '10px' }}>
+                    <details>
+                      <summary>Stack Trace</summary>
+                      <pre style={{ 
+                        backgroundColor: '#f8f9fa', 
+                        padding: '10px', 
+                        overflow: 'auto',
+                        fontSize: '12px',
+                        whiteSpace: 'pre-wrap',
+                        wordBreak: 'break-word'
+                      }}>
+                        {error.stack || error.reason || 'N/A'}
+                      </pre>
+                    </details>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      
+      <div>
+        <h2>Системная информация</h2>
+        <div style={{ backgroundColor: '#e9ecef', padding: '15px', borderRadius: '4px' }}>
+          <div><strong>User Agent:</strong> {navigator.userAgent}</div>
+          <div><strong>URL:</strong> {window.location.href}</div>
+          <div><strong>Время загрузки страницы:</strong> {document.readyState === 'complete' ? 'Загружена' : 'Загружается'}</div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    localStorage.getItem('isLoggedIn') === 'true'
-  );
-  
-  // Принудительно очищаем localStorage при первой загрузке приложения
-  useEffect(() => {
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('user');
-    setIsLoggedIn(false);
-  }, []);
-  
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-  };
-  
-  const handleLogout = () => {
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('user');
-    setIsLoggedIn(false);
-  };
-  
   // Создаем маршруты с использованием нового API React Router v6.4+
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
-        <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+        {/* Перенаправляем на главную страницу если кто-то попробует зайти на /login */}
+        <Route path="/login" element={<HomePage />} />
         <Route path="/" element={
           <>
             <GlobalHotkeys />
-            <ProtectedRoute element={<HomePage onLogout={handleLogout} />} />
+            <HomePage />
           </>
         } />
         <Route path="/order/:id" element={
           <>
             <GlobalHotkeys />
-            <ProtectedRoute element={<OrderDetailsPage />} />
+            <OrderDetailsPage />
           </>
         } />
-        <Route path="/settings" element={
+        <Route path="/debug" element={
           <>
             <GlobalHotkeys />
-            <ProtectedRoute element={<SettingsWithLogout onLogout={handleLogout} />} />
+            <DebugPage />
           </>
         } />
       </>

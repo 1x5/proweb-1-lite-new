@@ -12,7 +12,7 @@
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Мебель Технологии</title>
-    <script src="/error-logger.js"></script>  </head>
+  </head>
   <body>
     <noscript>Для работы приложения необходимо включить JavaScript.</noscript>
     <div id="root"></div>

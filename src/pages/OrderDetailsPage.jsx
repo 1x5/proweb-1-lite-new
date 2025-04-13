@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { ChevronLeft, Edit2, ExternalLink, Check, Move, Paperclip, Clock, Plus, Sun, Moon, X, Trash2, Image, Camera } from 'lucide-react';
+import { ChevronLeft, Edit2, ExternalLink, Check, Move, Paperclip, Clock, Plus, Sun, Moon, X, Trash2, Camera } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import BottomNavigation from '../components/BottomNavigation';
 import { getOrderById, saveOrder, deleteOrder } from '../services/OrderService';
@@ -22,8 +22,8 @@ const OrderDetailsPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   
-  // Статусы продукта
-  const statuses = ['Ожидает', 'В работе', 'Выполнен'];
+  // Статусы продукта (закомментировано, так как не используется напрямую)
+  // const statuses = ['Ожидает', 'В работе', 'Выполнен'];
   
   // Определяем, является ли устройство мобильным
   useEffect(() => {

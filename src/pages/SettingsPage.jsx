@@ -39,7 +39,9 @@ const SettingsPage = ({ onLogout }) => {
     const handleKeyDown = (e) => {
       // Проверяем, что нажата клавиша S вместе с Cmd (Mac) или Ctrl (Windows)
       if ((e.metaKey || e.ctrlKey) && e.key === 's') {
-        e.preventDefault(); // Предотвращаем стандартное поведение браузера
+        e.preventDefault(); // Предотвращаем стандартное поведение браузера (сохранение страницы)
+        
+        // Если мы в режиме редактирования, сохраняем изменения
         if (editMode) {
           handleSaveSettings();
         }
@@ -53,7 +55,7 @@ const SettingsPage = ({ onLogout }) => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [editMode]);
+  }, [editMode, handleSaveSettings]); // Добавляем handleSaveSettings в массив зависимостей
   
   const handleSaveSettings = () => {
     // Проверка валидности email

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Sun, Calendar, X, Plus, Moon, List, LayoutGrid, Trash2 } from 'lucide-react';
+import { Search, Sun, Calendar, Moon, List, LayoutGrid, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import BottomNavigation from '../components/BottomNavigation';
 import { getOrders, deleteOrder } from '../services/OrderService';
