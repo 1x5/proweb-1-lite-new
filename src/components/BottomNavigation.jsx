@@ -1,51 +1,44 @@
 import React from 'react';
-import { Home, Plus } from 'lucide-react';
+import { Home, Plus, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useTheme } from '../contexts/ThemeContext';
 
-const BottomNavigation = ({ activePage }) => {
-  const { theme } = useTheme();
+const BottomNavigation = () => {
   const navigate = useNavigate();
   
   return (
-    <div className="fixed bottom-0 left-0 w-full flex justify-around items-center py-3 border-t" 
-         style={{ backgroundColor: theme.navBg, borderColor: theme.cardBorder }}>
-      <button 
-        className="flex-1 p-3 flex flex-col items-center"
+    <div 
+      className="fixed bottom-0 left-0 right-0 h-16 flex items-center justify-around px-4"
+      style={{ 
+        backgroundColor: '#f0f0f0',
+        borderTop: '1px solid #e0e0e0'
+      }}
+    >
+      <button
+        className="flex flex-col items-center"
         onClick={() => navigate('/')}
       >
-        <Home 
-          size={24} 
-          color={activePage === 'home' ? theme.accent : theme.textSecondary} 
-        />
-        <span 
-          className="text-xs mt-1" 
-          style={{ color: activePage === 'home' ? theme.accent : theme.textSecondary }}
-        >
-          Все заказы
-        </span>
+        <Home size={24} color="#333333" />
+        <span style={{ color: '#333333', fontSize: '0.75rem', marginTop: '2px' }}>Главная</span>
       </button>
       
-      {/* Центральная кнопка добавления */}
-      <button 
-        className="rounded-full w-16 h-16 flex items-center justify-center mx-4 -mt-6 shadow-lg"
-        style={{ backgroundColor: theme.accent }}
+      <button
+        className="flex flex-col items-center"
         onClick={() => navigate('/order/new')}
       >
-        <Plus size={28} color="#ffffff" />
+        <div 
+          className="w-12 h-12 rounded-full flex items-center justify-center"
+          style={{ backgroundColor: '#333333' }}
+        >
+          <Plus size={24} color="#ffffff" />
+        </div>
       </button>
       
-      {/* Кнопка отладки в правой части */}
-      <button 
-        className="flex-1 p-3 flex flex-col items-center"
-        onClick={() => navigate('/debug')}
+      <button
+        className="flex flex-col items-center"
+        onClick={() => navigate('/settings')}
       >
-        <span 
-          className="text-xs mt-1" 
-          style={{ color: activePage === 'debug' ? theme.accent : theme.textSecondary }}
-        >
-          Отладка
-        </span>
+        <Settings size={24} color="#333333" />
+        <span style={{ color: '#333333', fontSize: '0.75rem', marginTop: '2px' }}>Настройки</span>
       </button>
     </div>
   );

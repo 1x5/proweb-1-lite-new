@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { ChevronLeft, Edit2, ExternalLink, Check, Move, Paperclip, Clock, Plus, Sun, Moon, X, Trash2, Camera } from 'lucide-react';
+import { ChevronLeft, Edit2, ExternalLink, Check, Move, Paperclip, Clock, Plus, X, Trash2, Camera } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import BottomNavigation from '../components/BottomNavigation';
 import { getOrderById, saveOrder, deleteOrder } from '../services/OrderService';
-import { useTheme } from '../contexts/ThemeContext';
 
 const OrderDetailsPage = () => {
-  const { darkMode, toggleDarkMode, theme } = useTheme();
   const [editMode, setEditMode] = useState(false);
   const [product, setProduct] = useState(null);
   const [newExpense, setNewExpense] = useState({ name: '', cost: '' });
@@ -21,9 +19,6 @@ const OrderDetailsPage = () => {
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
   const { id } = useParams();
-  
-  // Статусы продукта (закомментировано, так как не используется напрямую)
-  // const statuses = ['Ожидает', 'В работе', 'Выполнен'];
   
   // Определяем, является ли устройство мобильным
   useEffect(() => {
@@ -304,24 +299,24 @@ const OrderDetailsPage = () => {
   // Если данные еще не загружены
   if (!product) {
     return (
-      <div className="flex items-center justify-center h-screen" style={{ backgroundColor: theme.bg }}>
-        <div style={{ color: theme.textPrimary }}>Загрузка...</div>
+      <div className="flex items-center justify-center h-screen" style={{ backgroundColor: '#ffffff' }}>
+        <div style={{ color: '#333333' }}>Загрузка...</div>
       </div>
     );
   }
   
   return (
-    <div className="flex flex-col h-screen" style={{ backgroundColor: theme.bg }}>
+    <div className="flex flex-col h-screen" style={{ backgroundColor: '#ffffff' }}>
       {/* Верхняя панель */}
-      <div className="p-3 flex justify-between items-center" style={{ backgroundColor: darkMode ? '#1a1a1a' : theme.bg }}>
+      <div className="p-3 flex justify-between items-center" style={{ backgroundColor: '#ffffff' }}>
         <div className="flex items-center">
           <ChevronLeft 
             size={24} 
-            color={theme.textPrimary} 
+            color="#333333" 
             className="mr-2 cursor-pointer" 
             onClick={() => navigate('/')}
           />
-          <h1 className="text-xl font-bold" style={{ color: theme.textPrimary }}>
+          <h1 className="text-xl font-bold" style={{ color: '#333333' }}>
             {editMode ? (
               <input 
                 type="text" 
@@ -329,8 +324,8 @@ const OrderDetailsPage = () => {
                 onChange={(e) => setProduct({...product, name: e.target.value})}
                 className="p-1 rounded"
                 style={{ 
-                  backgroundColor: theme.inputBg, 
-                  color: theme.textPrimary, 
+                  backgroundColor: '#f0f0f0', 
+                  color: '#333333', 
                   border: 'none',
                   fontSize: '1.25rem',
                   fontWeight: 'bold',
@@ -347,7 +342,7 @@ const OrderDetailsPage = () => {
           {!isMobile && id !== 'new' && !isNewOrder && (
             <button 
               className="rounded-full p-2 mr-2"
-              style={{ backgroundColor: theme.red }}
+              style={{ backgroundColor: '#dc2626' }}
               onClick={() => setShowDeleteConfirm(true)}
             >
               <Trash2 size={20} color="#ffffff" />
@@ -355,24 +350,13 @@ const OrderDetailsPage = () => {
           )}
           
           <button 
-            className="rounded-full p-2 mr-2"
-            style={{ backgroundColor: theme.card }}
-            onClick={toggleDarkMode}
-          >
-            {darkMode ? 
-              <Sun size={20} color={theme.textPrimary} /> : 
-              <Moon size={20} color={theme.textPrimary} />
-            }
-          </button>
-          
-          <button 
             className="rounded-full p-2"
-            style={{ backgroundColor: editMode ? theme.green : theme.accent }}
+            style={{ backgroundColor: '#f0f0f0' }}
             onClick={toggleEditMode}
           >
             {editMode ? 
-              <Check size={20} color="#ffffff" /> : 
-              <Edit2 size={20} color="#ffffff" />
+              <Check size={20} color="#333333" /> : 
+              <Edit2 size={20} color="#333333" />
             }
           </button>
         </div>
@@ -381,45 +365,45 @@ const OrderDetailsPage = () => {
       {/* Основное содержимое */}
       <div className="flex-1 overflow-auto px-3 pb-20">
         {/* Блок цены и прибыли */}
-        <div className="mb-3 rounded-xl p-3" style={{ backgroundColor: theme.card }}>
+        <div className="mb-3 rounded-xl p-3" style={{ backgroundColor: '#f8f9fa' }}>
           <div className="flex justify-between items-center mb-2">
-            <h2 className="text-lg font-bold" style={{ color: theme.textPrimary }}>Финансы</h2>
+            <h2 className="text-lg font-bold" style={{ color: '#333333' }}>Финансы</h2>
           </div>
           
-          <div className="h-px w-full mb-3" style={{ backgroundColor: theme.cardBorder }}></div>
+          <div className="h-px w-full mb-3" style={{ backgroundColor: '#e0e0e0' }}></div>
           
           <div className="grid grid-cols-2 gap-3 mb-2">
             <div>
-              <div className="text-sm mb-1" style={{ color: theme.textSecondary }}>Стоимость заказа:</div>
+              <div className="text-sm mb-1" style={{ color: '#606060' }}>Стоимость заказа:</div>
               {editMode ? (
                 <input 
                   type="number" 
                   value={product.price || ''}
                   onChange={(e) => setProduct({...product, price: parseFloat(e.target.value) || 0})}
                   className="w-full p-2 rounded"
-                  style={{ backgroundColor: theme.inputBg, color: theme.textPrimary, border: 'none' }}
+                  style={{ backgroundColor: '#f0f0f0', color: '#333333', border: 'none' }}
                 />
               ) : (
-                <div style={{ color: theme.textPrimary }}>{product.price}₽</div>
+                <div style={{ color: '#333333' }}>{product.price}₽</div>
               )}
             </div>
             
             <div>
-              <div className="text-sm mb-1" style={{ color: theme.textSecondary }}>Себестоимость:</div>
-              <div style={{ color: theme.textPrimary }}>{product.cost}₽</div>
+              <div className="text-sm mb-1" style={{ color: '#606060' }}>Себестоимость:</div>
+              <div style={{ color: '#333333' }}>{product.cost}₽</div>
             </div>
           </div>
           
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <div className="text-sm mb-1" style={{ color: theme.textSecondary }}>Прибыль:</div>
-              <div style={{ color: theme.green }}>{product.profit}₽</div>
+              <div className="text-sm mb-1" style={{ color: '#606060' }}>Прибыль:</div>
+              <div style={{ color: '#16a34a' }}>{product.profit}₽</div>
             </div>
             
             <div>
-              <div className="text-sm mb-1" style={{ color: theme.textSecondary }}>Рентабельность:</div>
+              <div className="text-sm mb-1" style={{ color: '#606060' }}>Рентабельность:</div>
               <div style={{ 
-                color: product.profitPercent < 50 ? theme.red : theme.green
+                color: product.profitPercent < 50 ? '#dc2626' : '#16a34a'
               }}>
                 {product.profitPercent}%
               </div>
@@ -428,14 +412,14 @@ const OrderDetailsPage = () => {
         </div>
         
         {/* Блок расходов */}
-        <div className="mb-3 rounded-xl p-3" style={{ backgroundColor: theme.card }}>
+        <div className="mb-3 rounded-xl p-3" style={{ backgroundColor: '#f8f9fa' }}>
           <div className="flex justify-between items-center mb-2">
-            <h2 className="text-lg font-bold" style={{ color: theme.textPrimary }}>Расходы: {product.cost}₽</h2>
+            <h2 className="text-lg font-bold" style={{ color: '#333333' }}>Расходы: {product.cost}₽</h2>
           </div>
           
-          <div className="h-px w-full mb-3" style={{ backgroundColor: theme.cardBorder }}></div>
+          <div className="h-px w-full mb-3" style={{ backgroundColor: '#e0e0e0' }}></div>
           
-          <div className="rounded-lg p-2" style={{ backgroundColor: theme.innerCard }}>
+          <div className="rounded-lg p-2" style={{ backgroundColor: '#ffffff' }}>
             {/* Список расходов */}
             {product.expenses.length > 0 ? (
               product.expenses.map((expense, index) => (
@@ -447,7 +431,7 @@ const OrderDetailsPage = () => {
                     <div className="flex items-center">
                       {editMode && (
                         <div className="mr-1 cursor-move">
-                          <Move size={14} color={theme.textSecondary} />
+                          <Move size={14} color="#606060" />
                         </div>
                       )}
                       
@@ -462,15 +446,15 @@ const OrderDetailsPage = () => {
                           }}
                           className="p-1 rounded"
                           style={{ 
-                            backgroundColor: theme.inputBg, 
-                            color: theme.textSecondary, 
+                            backgroundColor: '#f0f0f0', 
+                            color: '#333333', 
                             border: 'none',
                             fontSize: '0.9rem',
                             width: '150px'
                           }}
                         />
                       ) : (
-                        <span style={{ color: theme.textSecondary, fontSize: '0.9rem' }}>{expense.name}</span>
+                        <span style={{ color: '#333333', fontSize: '0.9rem' }}>{expense.name}</span>
                       )}
                       
                       {/* Иконка ссылки */}
@@ -481,7 +465,7 @@ const OrderDetailsPage = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="ml-1"
-                            style={{ color: theme.accent }}
+                            style={{ color: '#333333' }}
                           >
                             <ExternalLink size={14} />
                           </a>
@@ -496,7 +480,7 @@ const OrderDetailsPage = () => {
                                 };
                                 setProduct({...product, expenses: updatedExpenses});
                               }}
-                              style={{ color: theme.accent }}
+                              style={{ color: '#333333' }}
                             >
                               <Edit2 size={14} />
                             </button>
@@ -514,7 +498,7 @@ const OrderDetailsPage = () => {
                               };
                               setProduct({...product, expenses: updatedExpenses});
                             }}
-                            style={{ color: theme.textSecondary }}
+                            style={{ color: '#606060' }}
                           >
                             <Paperclip size={14} />
                           </button>
@@ -535,8 +519,8 @@ const OrderDetailsPage = () => {
                             }}
                             className="p-1 rounded w-20 text-right mr-2"
                             style={{ 
-                              backgroundColor: theme.inputBg, 
-                              color: theme.textPrimary, 
+                              backgroundColor: '#f0f0f0', 
+                              color: '#333333', 
                               border: 'none',
                               fontSize: '0.9rem'
                             }}
@@ -546,11 +530,11 @@ const OrderDetailsPage = () => {
                             className="p-1 rounded-full"
                             style={{ backgroundColor: 'rgba(255,0,0,0.1)' }}
                           >
-                            <Trash2 size={14} color={theme.red} />
+                            <Trash2 size={14} color="#dc2626" />
                           </button>
                         </>
                       ) : (
-                        <span style={{ color: theme.textPrimary, fontSize: '0.9rem' }}>{expense.cost}₽</span>
+                        <span style={{ color: '#333333', fontSize: '0.9rem' }}>{expense.cost}₽</span>
                       )}
                     </div>
                   </div>
@@ -572,11 +556,11 @@ const OrderDetailsPage = () => {
                           }}
                           placeholder="https://..." 
                           className="flex-1 p-1.5 text-xs rounded"
-                          style={{ backgroundColor: theme.inputBg, color: theme.textPrimary, border: 'none' }}
+                          style={{ backgroundColor: '#f0f0f0', color: '#333333', border: 'none' }}
                         />
                         <button 
                           className="rounded-full w-6 h-6 flex items-center justify-center"
-                          style={{ backgroundColor: theme.accent }}
+                          style={{ backgroundColor: '#333333' }}
                           onClick={() => {
                             const updatedExpenses = [...product.expenses];
                             updatedExpenses[index] = {
@@ -592,7 +576,7 @@ const OrderDetailsPage = () => {
                         </button>
                         <button 
                           className="rounded-full w-6 h-6 flex items-center justify-center"
-                          style={{ backgroundColor: theme.card }}
+                          style={{ backgroundColor: '#f0f0f0' }}
                           onClick={() => {
                             const updatedExpenses = [...product.expenses];
                             updatedExpenses[index] = {
@@ -603,7 +587,7 @@ const OrderDetailsPage = () => {
                             setProduct({...product, expenses: updatedExpenses});
                           }}
                         >
-                          <X size={14} color={theme.textSecondary} />
+                          <X size={14} color="#606060" />
                         </button>
                       </div>
                     </div>
@@ -611,14 +595,14 @@ const OrderDetailsPage = () => {
                 </div>
               ))
             ) : (
-              <div className="text-center py-2" style={{ color: theme.textSecondary }}>
+              <div className="text-center py-2" style={{ color: '#606060' }}>
                 Нет расходов
               </div>
             )}
             
             {/* Форма добавления нового расхода */}
             {editMode && (
-              <div className="mt-3 pt-3 border-t" style={{ borderColor: theme.cardBorder }}>
+              <div className="mt-3 pt-3 border-t" style={{ borderColor: '#e0e0e0' }}>
                 <div className="flex items-center space-x-2">
                   <input 
                     type="text" 
@@ -626,7 +610,7 @@ const OrderDetailsPage = () => {
                     onChange={(e) => setNewExpense({...newExpense, name: e.target.value})}
                     placeholder="Название" 
                     className="flex-1 p-2 rounded"
-                    style={{ backgroundColor: theme.inputBg, color: theme.textPrimary, border: 'none' }}
+                    style={{ backgroundColor: '#f0f0f0', color: '#333333', border: 'none' }}
                   />
                   <input 
                     type="number" 
@@ -634,11 +618,11 @@ const OrderDetailsPage = () => {
                     onChange={(e) => setNewExpense({...newExpense, cost: e.target.value})}
                     placeholder="Сумма" 
                     className="w-24 p-2 rounded"
-                    style={{ backgroundColor: theme.inputBg, color: theme.textPrimary, border: 'none' }}
+                    style={{ backgroundColor: '#f0f0f0', color: '#333333', border: 'none' }}
                   />
                   <button 
                     className="rounded-full w-8 h-8 flex items-center justify-center"
-                    style={{ backgroundColor: theme.accent }}
+                    style={{ backgroundColor: '#333333' }}
                     onClick={handleAddExpense}
                   >
                     <Plus size={20} color="#ffffff" />
@@ -650,12 +634,12 @@ const OrderDetailsPage = () => {
         </div>
         
         {/* Блок примечаний */}
-        <div className="mb-3 rounded-xl p-3" style={{ backgroundColor: theme.card }}>
+        <div className="mb-3 rounded-xl p-3" style={{ backgroundColor: '#f8f9fa' }}>
           <div className="flex justify-between items-center mb-2">
-            <h2 className="text-lg font-bold" style={{ color: theme.textPrimary }}>Примечания</h2>
+            <h2 className="text-lg font-bold" style={{ color: '#333333' }}>Примечания</h2>
           </div>
           
-          <div className="h-px w-full mb-3" style={{ backgroundColor: theme.cardBorder }}></div>
+          <div className="h-px w-full mb-3" style={{ backgroundColor: '#e0e0e0' }}></div>
           
           {editMode ? (
             <textarea 
@@ -663,8 +647,8 @@ const OrderDetailsPage = () => {
               onChange={(e) => setProduct({...product, notes: e.target.value})}
               className="w-full p-2 rounded min-h-24"
               style={{ 
-                backgroundColor: theme.innerCard, 
-                color: theme.textPrimary, 
+                backgroundColor: '#ffffff', 
+                color: '#333333', 
                 border: 'none',
                 resize: 'vertical'
               }}
@@ -673,29 +657,29 @@ const OrderDetailsPage = () => {
           ) : (
             <div 
               className="p-2 rounded"
-              style={{ backgroundColor: theme.innerCard }}
+              style={{ backgroundColor: '#ffffff' }}
             >
               {product.notes ? (
-                <p style={{ color: theme.textPrimary }}>{product.notes}</p>
+                <p style={{ color: '#333333' }}>{product.notes}</p>
               ) : (
-                <p style={{ color: theme.textSecondary }}>Нет примечаний</p>
+                <p style={{ color: '#606060' }}>Нет примечаний</p>
               )}
             </div>
           )}
         </div>
         
         {/* Блок сроков */}
-        <div className="mb-3 rounded-xl p-3" style={{ backgroundColor: theme.card }}>
+        <div className="mb-3 rounded-xl p-3" style={{ backgroundColor: '#f8f9fa' }}>
           <div className="flex justify-between items-center mb-2">
-            <h2 className="text-lg font-bold" style={{ color: theme.textPrimary }}>Сроки</h2>
+            <h2 className="text-lg font-bold" style={{ color: '#333333' }}>Сроки</h2>
           </div>
           
-          <div className="h-px w-full mb-3" style={{ backgroundColor: theme.cardBorder }}></div>
+          <div className="h-px w-full mb-3" style={{ backgroundColor: '#e0e0e0' }}></div>
           
           <div className="flex items-center mb-3">
             <div className="flex items-center mr-4">
-              <Clock size={16} color={theme.textSecondary} className="mr-1" />
-              <span style={{ color: theme.textSecondary }}>Длительность:</span>
+              <Clock size={16} color="#606060" className="mr-1" />
+              <span style={{ color: '#606060' }}>Длительность:</span>
             </div>
             <div className="flex items-center">
               {editMode ? (
@@ -704,56 +688,56 @@ const OrderDetailsPage = () => {
                   value={product.duration}
                   onChange={(e) => setProduct({...product, duration: parseInt(e.target.value, 10) || 0})}
                   className="w-12 p-1 text-center rounded"
-                  style={{ backgroundColor: theme.inputBg, color: theme.textPrimary, border: 'none' }}
+                  style={{ backgroundColor: '#f0f0f0', color: '#333333', border: 'none' }}
                   readOnly
                 />
               ) : (
-                <span style={{ color: theme.textPrimary }}>{product.duration}</span>
+                <span style={{ color: '#333333' }}>{product.duration}</span>
               )}
-              <span style={{ color: theme.textSecondary, marginLeft: '4px' }}>дней</span>
+              <span style={{ color: '#606060', marginLeft: '4px' }}>дней</span>
             </div>
           </div>
           
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <div className="text-sm mb-1" style={{ color: theme.textSecondary }}>Дата начала:</div>
+              <div className="text-sm mb-1" style={{ color: '#606060' }}>Дата начала:</div>
               {editMode ? (
                 <input 
                   type="date" 
                   value={product.startDate}
                   onChange={handleStartDateChange}
                   className="w-full p-2 rounded"
-                  style={{ backgroundColor: theme.inputBg, color: theme.textPrimary, border: 'none' }}
+                  style={{ backgroundColor: '#f0f0f0', color: '#333333', border: 'none' }}
                 />
               ) : (
-                <div style={{ color: theme.textPrimary }}>{formatDate(product.startDate)}</div>
+                <div style={{ color: '#333333' }}>{formatDate(product.startDate)}</div>
               )}
             </div>
             
             <div>
-              <div className="text-sm mb-1" style={{ color: theme.textSecondary }}>Дата окончания:</div>
+              <div className="text-sm mb-1" style={{ color: '#606060' }}>Дата окончания:</div>
               {editMode ? (
                 <input 
                   type="date" 
                   value={product.endDate}
                   onChange={handleEndDateChange}
                   className="w-full p-2 rounded"
-                  style={{ backgroundColor: theme.inputBg, color: theme.textPrimary, border: 'none' }}
+                  style={{ backgroundColor: '#f0f0f0', color: '#333333', border: 'none' }}
                 />
               ) : (
-                <div style={{ color: theme.textPrimary }}>{formatDate(product.endDate)}</div>
+                <div style={{ color: '#333333' }}>{formatDate(product.endDate)}</div>
               )}
             </div>
           </div>
         </div>
         
         {/* Блок фотографий */}
-        <div className="mb-3 rounded-xl p-3" style={{ backgroundColor: theme.card }}>
+        <div className="mb-3 rounded-xl p-3" style={{ backgroundColor: '#f8f9fa' }}>
           <div className="flex justify-between items-center mb-2">
-            <h2 className="text-lg font-bold" style={{ color: theme.textPrimary }}>Фотографии</h2>
+            <h2 className="text-lg font-bold" style={{ color: '#333333' }}>Фотографии</h2>
           </div>
           
-          <div className="h-px w-full mb-3" style={{ backgroundColor: theme.cardBorder }}></div>
+          <div className="h-px w-full mb-3" style={{ backgroundColor: '#e0e0e0' }}></div>
           
           {/* Загрузка фотографий */}
           {editMode && (
@@ -769,9 +753,9 @@ const OrderDetailsPage = () => {
               <button 
                 className="w-full p-3 rounded flex items-center justify-center"
                 style={{ 
-                  backgroundColor: theme.innerCard, 
-                  color: theme.textPrimary,
-                  border: `1px dashed ${theme.cardBorder}`
+                  backgroundColor: '#ffffff', 
+                  color: '#333333',
+                  border: '1px dashed #e0e0e0'
                 }}
                 onClick={() => fileInputRef.current.click()}
               >
@@ -787,25 +771,25 @@ const OrderDetailsPage = () => {
               {Object.entries(uploadProgress).map(([fileId, progress]) => (
                 <div key={fileId} className="mb-2">
                   <div className="flex justify-between mb-1">
-                    <span style={{ color: theme.textSecondary, fontSize: '0.8rem' }}>
+                    <span style={{ color: '#606060', fontSize: '0.8rem' }}>
                       Загрузка: {fileId.split('_')[1]}
                     </span>
-                    <span style={{ color: theme.textPrimary, fontSize: '0.8rem' }}>
+                    <span style={{ color: '#333333', fontSize: '0.8rem' }}>
                       {progress}%
                     </span>
                   </div>
                   <div 
                     className="h-1.5 rounded-full overflow-hidden"
-                    style={{ backgroundColor: theme.inputBg }}
+                    style={{ backgroundColor: '#f0f0f0' }}
                   >
                     <div 
                       className="h-full rounded-full"
                       style={{ 
-                        width: `${progress}%`, 
-                        backgroundColor: theme.accent,
-                        transition: 'width 0.2s ease-in-out'
+                        backgroundColor: '#333333',
+                        width: `${progress}%`,
+                        transition: 'width 0.2s ease-out'
                       }}
-                    ></div>
+                    />
                   </div>
                 </div>
               ))}
@@ -842,7 +826,7 @@ const OrderDetailsPage = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-4" style={{ color: theme.textSecondary }}>
+            <div className="text-center py-4" style={{ color: '#606060' }}>
               Нет фотографий
             </div>
           )}
@@ -881,31 +865,31 @@ const OrderDetailsPage = () => {
         >
           <div 
             className="p-4 rounded-lg text-center"
-            style={{ backgroundColor: theme.card, maxWidth: '80%', width: '300px' }}
+            style={{ backgroundColor: '#ffffff', maxWidth: '80%', width: '300px' }}
           >
             <h3 
               className="text-lg font-bold mb-3" 
-              style={{ color: theme.textPrimary }}
+              style={{ color: '#333333' }}
             >
               Удалить заказ?
             </h3>
             <p 
               className="mb-4" 
-              style={{ color: theme.textSecondary }}
+              style={{ color: '#606060' }}
             >
               Вы уверены, что хотите удалить заказ "{product?.name}"? Это действие нельзя отменить.
             </p>
             <div className="flex space-x-2">
               <button
                 className="flex-1 py-2 rounded"
-                style={{ backgroundColor: theme.card, color: theme.textSecondary }}
+                style={{ backgroundColor: '#ffffff', color: '#333333' }}
                 onClick={() => setShowDeleteConfirm(false)}
               >
                 Отмена
               </button>
               <button
                 className="flex-1 py-2 rounded"
-                style={{ backgroundColor: theme.red, color: '#ffffff' }}
+                style={{ backgroundColor: '#dc2626', color: '#ffffff' }}
                 onClick={handleDeleteOrder}
               >
                 Удалить
@@ -920,7 +904,7 @@ const OrderDetailsPage = () => {
         <div 
           className="fixed bottom-20 left-0 right-0 mx-auto w-64 p-3 rounded-lg text-center"
           style={{ 
-            backgroundColor: theme.green, 
+            backgroundColor: '#16a34a', 
             color: '#ffffff',
             zIndex: 1000,
             boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'

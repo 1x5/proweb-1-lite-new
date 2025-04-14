@@ -4,12 +4,10 @@ import {
   RouterProvider, 
   createRoutesFromElements, 
   Route,
-  useNavigate,
-  useLocation
+  useNavigate
 } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import OrderDetailsPage from './pages/OrderDetailsPage';
-import { ThemeProvider } from './contexts/ThemeContext';
 
 // Компонент для страницы отладки
 const DebugPage = () => {
@@ -176,9 +174,7 @@ function App() {
   );
 
   return (
-    <ThemeProvider>
-      <RouterProvider router={router} />
-    </ThemeProvider>
+    <RouterProvider router={router} />
   );
 }
 
