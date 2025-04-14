@@ -119,30 +119,6 @@ const OrderDetailsPage = () => {
     return savedOrder;
   }, [product, navigate, photos, isNewOrder]);
   
-  // Обработчик нажатия клавиш (Cmd+S / Ctrl+S)
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      // Проверяем, что нажата клавиша S вместе с Cmd (Mac) или Ctrl (Windows)
-      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
-        e.preventDefault(); // Предотвращаем стандартное поведение браузера (сохранение страницы)
-        
-        // Если мы в режиме редактирования, сохраняем изменения
-        if (editMode) {
-          handleSaveOrder(false); // Не переходим на главную страницу после сохранения
-          setEditMode(false); // Выходим из режима редактирования
-        }
-      }
-    };
-    
-    // Добавляем обработчик события
-    window.addEventListener('keydown', handleKeyDown);
-    
-    // Удаляем обработчик при размонтировании компонента
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [handleSaveOrder, editMode]);
-  
   // Расчет длительности при изменении дат
   const calculateDuration = (startDate, endDate) => {
     if (!startDate || !endDate) return 0;

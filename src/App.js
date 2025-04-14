@@ -11,40 +11,6 @@ import HomePage from './pages/HomePage';
 import OrderDetailsPage from './pages/OrderDetailsPage';
 import { ThemeProvider } from './contexts/ThemeContext';
 
-// Компонент для глобальных горячих клавиш
-const GlobalHotkeys = () => {
-  const navigate = useNavigate();
-  // eslint-disable-next-line no-unused-vars
-  const location = useLocation();
-  
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      // Проверяем, что не находимся в поле ввода и что document.activeElement существует
-      const isInputActive = document.activeElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
-      
-      // Cmd+N или Ctrl+N - создать новый заказ
-      if ((e.metaKey || e.ctrlKey) && e.key === 'n' && !isInputActive) {
-        e.preventDefault();
-        navigate('/order/new');
-      }
-      
-      // Cmd+D или Ctrl+D - открыть панель отладки
-      if ((e.metaKey || e.ctrlKey) && e.key === 'd' && !isInputActive) {
-        e.preventDefault();
-        navigate('/debug');
-      }
-    };
-    
-    window.addEventListener('keydown', handleKeyDown);
-    
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [navigate]);
-  
-  return null;
-};
-
 // Компонент для страницы отладки
 const DebugPage = () => {
   const [errors, setErrors] = useState([]);
@@ -199,30 +165,12 @@ const DebugPage = () => {
 };
 
 function App() {
-  // Создаем маршруты с использованием нового API React Router v6.4+
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
-        {/* Перенаправляем на главную страницу если кто-то попробует зайти на /login */}
-        <Route path="/login" element={<HomePage />} />
-        <Route path="/" element={
-          <>
-            <GlobalHotkeys />
-            <HomePage />
-          </>
-        } />
-        <Route path="/order/:id" element={
-          <>
-            <GlobalHotkeys />
-            <OrderDetailsPage />
-          </>
-        } />
-        <Route path="/debug" element={
-          <>
-            <GlobalHotkeys />
-            <DebugPage />
-          </>
-        } />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/order/:id" element={<OrderDetailsPage />} />
+        <Route path="/debug" element={<DebugPage />} />
       </>
     )
   );
